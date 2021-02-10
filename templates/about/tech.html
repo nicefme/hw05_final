@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Технологии проекта{% endblock %}
+{% block content %}
+{% load user_filters %}
+  <main role="main" class="container">
+    <div class="row">
+      <!-- Левый вспомогательный блок -->
+      <div class="col-md-3 mb-3 mt-1">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="h3">
+                  Технологии
+                </div> 
+              </li>
+              <li class="list-group-item">
+                <div class="h6 text-muted">
+                  Технологии, примененные при создании сайта
+                </div>
+              </li>
+            </ul>                                               
+          </div>                    
+        </div>                
+      </div>
+      <!-- Тело страницы -->
+      <div class="col-md-9">
+        <div class="card-body">                    
+          <div class="card-text">
+            
+            <p align="justify">
+                
+                В процессе выполнения проекта было применено множество 
+                программных инструментов. 99% из них были взяты из теории во 
+                время прохождения спринтов, какую-то часть удавалось нагуглить.
+                </br></br>
+
+                Лучше всего получилось разобраться с формами, проект 4
+                спринта был сделан без помощи чата в slaсk, тяжелее всего 
+                дались модели. 
+                </br></br>
+
+                Как мне кажется еще одно из самых важных направлений это 
+                понять синтаксис python и в частности django. Это как с 
+                обучением иностранного языка, не зная правил, заговорить 
+                сможет только способный к изучению языка человек (такие 
+                скорее всего становятся полиглотами).
+                
+            </p>
+          </div>                    
+        </div>                
+      </div>            
+    </div>        
+  </main>
+{% endblock %} 

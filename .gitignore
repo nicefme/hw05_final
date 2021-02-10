@@ -1,0 +1,50 @@
+.git/*
+env/
+venv/
+.venv
+.venv/
+
+media
+media/
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+vscode
+vscode/
+.vscode
+.vscode/
+
+sent_emails/
+
+=======
+>>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
+=======
+>>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
+__pycache__/
+*.py[cod]
+
+.idea
+.DS_Store
+.AppleDouble
+.LSOverride
+.vscode
+
+*.sublime-project
+*.sublime-workspace
+
+static/
+posts/static/
+
+db.sqlite3
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover 
+=======
+>>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
+=======
+>>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
