@@ -27,7 +27,7 @@ class Post(models.Model):
                               verbose_name="Группа",
                               related_name="posts",
                               help_text="Укажите наименование группы")
-    image = models.ImageField(upload_to="media/",
+    image = models.ImageField(upload_to="posts/",
                               blank=True,
                               null=True,
                               verbose_name="Изображение")

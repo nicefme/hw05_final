@@ -57,6 +57,15 @@ class PostFormTests(TestCase):
             content_type='image/gif'
         )
 
+    @classmethod
+    def tearDownClass(cls):
+        # Модуль shutil - библиотека Python с прекрасными инструментами
+        # для управления файлами и директориями:
+        # создание, удаление, копирование, перемещение, изменение папок|файлов
+        # Метод shutil.rmtree удаляет директорию и всё её содержимое
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
+
     def test_create_post(self):
         """Валидная форма создает запись в базе данных."""
         # Подсчитаем количество записей в Post
