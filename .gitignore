@@ -4,6 +4,7 @@ venv/
 .venv
 .venv/
 
+<<<<<<< HEAD
 media
 media/
 
@@ -20,6 +21,8 @@ sent_emails/
 >>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
 =======
 >>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
+=======
+>>>>>>> refs/remotes/origin/master
 __pycache__/
 *.py[cod]
 
@@ -27,13 +30,17 @@ __pycache__/
 .DS_Store
 .AppleDouble
 .LSOverride
+<<<<<<< HEAD
 .vscode
+=======
+>>>>>>> refs/remotes/origin/master
 
 *.sublime-project
 *.sublime-workspace
 
 static/
 posts/static/
+<<<<<<< HEAD
 
 db.sqlite3
 <<<<<<< HEAD
@@ -48,3 +55,8 @@ coverage.xml
 >>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
 =======
 >>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
+=======
+media/
+
+db.sqlite3
+>>>>>>> refs/remotes/origin/master
