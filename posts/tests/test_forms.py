@@ -28,15 +28,6 @@ class PostFormTests(TestCase):
                              slug="slug",
                              description="Тестовое описание группы")
 
-    @classmethod
-    def tearDownClass(cls):
-        # Модуль shutil - библиотека Python с прекрасными инструментами
-        # для управления файлами и директориями:
-        # создание, удаление, копирование, перемещение, изменение папок|файлов
-        # Метод shutil.rmtree удаляет директорию и всё её содержимое
-        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
-        super().tearDownClass()
-
     def setUp(self):
         # Создаем авторизованный клиент
         self.authorized_client = Client()

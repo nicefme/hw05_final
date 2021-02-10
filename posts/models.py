@@ -58,8 +58,14 @@ class Comment(models.Model):
     created = models.DateTimeField("date published", auto_now_add=True)
 
     def __str__(self):
-        # выводим текст поста
+        # выводим текст комментария
         return self.text[:15]
 
+
 class Follow(models.Model):
-    pass
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name="follower")
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name="following")

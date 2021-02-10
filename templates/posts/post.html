@@ -13,24 +13,24 @@
                             <div class="card-body">
                                     <div class="h2">
                                         <!-- Имя автора -->
-                                        {{ name.get_full_name }}
+                                        {{ author.get_full_name }}
                                     </div>
                                     <div class="h3 text-muted">
                                         <!-- username автора -->
-                                        @{{ name }}
+                                        @{{ author }}
                                     </div>
                             </div>
                             <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
                                             <div class="h6 text-muted">
-                                            Подписчиков: XXX <br />
-                                            Подписан: XXX
+                                            Подписчиков: {{ author.following.count }} <br />
+                                            Подписан: {{ author.follower.count }}
                                             </div>
                                     </li>
                                     <li class="list-group-item">
                                             <div class="h6 text-muted">
                                                 <!--Количество записей -->
-                                                Записей: {{ count }}
+                                                Записей: {{ author.posts.count }}
                                             </div>
                                     </li>
                             </ul>
@@ -50,6 +50,7 @@
                                  {% include "post_item.html" with post=post %}
                              
                     </div>
+                    
                     {% include "comments.html" %}
      </div>
     </div>

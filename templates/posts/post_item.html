@@ -27,7 +27,9 @@
         <div class="btn-group">
           {% if post.comments.exists %}
           <div>
+            <a class="btn btn-sm ">
             Комментариев: {{ post.comments.count }} 
+          </a>
           </div>
           {% endif %}
           <div>

@@ -1,14 +1,16 @@
 import shutil
 import tempfile
+import datetime as dt
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from django import forms
-import datetime as dt
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.cache import cache
+from django.db import IntegrityError
 
-from posts.models import Post, Group
+from posts.models import Post, Group, Comment, Follow
 
 
 class PostPagesTests(TestCase):
@@ -17,9 +19,9 @@ class PostPagesTests(TestCase):
         super().setUpClass()
         settings.MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
         # Создадим запись в БД
-        user = get_user_model().objects.create(username="AndreyTurutov",
-                                               first_name="Andrey",
-                                               last_name="Turutov")
+        cls.user_0 = get_user_model().objects.create(username="AndreyTurutov",
+                                                     first_name="Andrey",
+                                                     last_name="Turutov")
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -48,7 +50,7 @@ class PostPagesTests(TestCase):
 
         new_posts = [
             Post(text="Тестовая запись",
-                 author=user,
+                 author=cls.user_0,
                  group=Group.objects.get(id=(post+1)),
                  image=cls.uploaded)
 
@@ -56,15 +58,6 @@ class PostPagesTests(TestCase):
         ]
 
         Post.objects.bulk_create(new_posts)
-
-    @classmethod
-    def tearDownClass(cls):
-        # Модуль shutil - библиотека Python с прекрасными инструментами
-        # для управления файлами и директориями:
-        # создание, удаление, копирование, перемещение, изменение папок|файлов
-        # Метод shutil.rmtree удаляет директорию и всё её содержимое
-        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
-        super().tearDownClass()
 
     def setUp(self):
         # Создаем неавторизованный клиент
@@ -75,6 +68,17 @@ class PostPagesTests(TestCase):
         self.authorized_client.force_login(self.user)
         # Создадим текущую дату
         self.date_now = dt.datetime.utcnow().strftime("%m/%d/%y")
+        # Чистим cache перед запуском каждого теста
+        cache.clear()
+
+    @classmethod
+    def tearDownClass(cls):
+        # Модуль shutil - библиотека Python с прекрасными инструментами
+        # для управления файлами и директориями:
+        # создание, удаление, копирование, перемещение, изменение папок|файлов
+        # Метод shutil.rmtree удаляет директорию и всё её содержимое
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
 
     # Проверяем используемые шаблоны
     def test_pages_uses_correct_template(self):
@@ -248,26 +252,119 @@ class PostPagesTests(TestCase):
                 # Проверяет, что поле формы является экземпляром
                 # указанного класса
                 self.assertIsInstance(form_field, expected)
- 
+
     # Проверяем кеширование главной страницы index.html
     def test_cash_home_page(self):
         """Шаблон index кеширует главную страницу"""
-        # Зайдем на главную страницу авторизованным пользователем
-        response_auth = self.authorized_client.get(reverse("posts:index"))
-        last_post = response_auth.context.get("latest")[0].text
-
-        # Создаем пост авторизованным пользователем
+        # Зайдем на главную страницу первый раз
+        response = self.authorized_client.get(reverse("posts:index"))
         Post.objects.create(text="Тестовая запись для кеша",
                             author=self.user)
-
-        # Зайдем на главную страницу не авторизованным пользователем
-        response_guest = self.guest_client.get(reverse("posts:index"))
-        new_last_post = response_guest.context.get("latest")[0].text
+        # Зайдем на главную страницу второй раз
+        response = self.authorized_client.get(reverse("posts:index"))
+        context_none = response.context
         # Проверим, что шаблоны двух страниц одинаковые
-        show_context = {
-            last_post: new_last_post
+
+        self.assertIsNone(context_none)
+        # Чистим cache и проверяем что контекст появился
+        cache.clear()
+
+        # Зайдем на главную страницу третий раз
+        response = self.authorized_client.get(reverse("posts:index"))
+        context_none = response.context.get("post").text
+        self.assertEqual(context_none, "Тестовая запись для кеша")
+
+    def test_follower_is_follow(self):
+        """Авторизованный пользователь может подписываться на других
+        пользователей и удалять их из подписок"""
+
+        self.authorized_client.get(reverse(
+            "posts:profile",
+            kwargs={"username": "AndreyTurutov"}))
+
+        # Подпишем пользователя на автора поста
+        follow = Follow.objects.create(user=self.user, author=self.user_0)
+
+        # Отпишем пользователя от автора поста
+        unfollow = Follow.objects.all()
+        unfollow.delete()
+        unfollow = Follow.objects.all().count()
+
+        un_or_follow_tab = {
+            follow.author.username: "AndreyTurutov",
+            follow.user.username: "AndreyT",
+            unfollow: 0
         }
 
-        for value, expected in show_context.items():
-            with self.subTest():
-                self.assertNotEqual(value, expected)
+        for value, expected in un_or_follow_tab.items():
+            with self.subTest(self):
+                self.assertEqual(value, expected)
+
+    def test_follow_feed(self):
+        """Новая запись пользователя появляется в ленте тех, кто на него
+        подписан и не появляется в ленте тех, кто не подписан на него"""
+
+        # Создаем авторизованный клиент, который не будет подписан на автора
+        authorized_client_1 = Client()
+        user_2 = get_user_model().objects.create(username="Iliya")
+        authorized_client_1.force_login(user_2)
+
+        # Подпишем пользователя на автора поста
+        Follow.objects.create(user=self.user, author=self.user_0)
+
+        # Создадим новый пост автором
+        Post.objects.create(text="Тестовая запись follow",
+                            author=self.user_0,
+                            image=self.uploaded)
+
+        response = self.authorized_client.get(reverse("posts:follow_index"))
+        test_text = response.context.get("page")[0].text
+
+        response = authorized_client_1.get(reverse("posts:follow_index"))
+        len_text = response.context.get("page")
+
+        un_or_follow = {
+            test_text: "Тестовая запись follow",
+            len(len_text): 0
+        }
+
+        for value, expected in un_or_follow.items():
+            with self.subTest(value=value):
+                self.assertEqual(value, expected)
+
+    def test_comment_correct_context(self):
+        """Только авторизированный пользователь может комментировать посты"""
+        # Проверка comment для авторизованного и неавторизованного пользователя
+        post = Post.objects.get(pk=1)
+
+        # Создадим комментарий авторизованным пользователем
+        Comment.objects.create(post=post,
+                               author=self.user,
+                               text="Текс комментария")
+
+        # Проверим, что у поста появился комментарий авторизованного
+        # пользователя
+        # Зайдем на страницу поста авторизованным пользователем
+        response_login = self.authorized_client.get(reverse(
+            "posts:post",
+            kwargs={"username": "AndreyTurutov", "post_id": "1"}
+        ))
+
+        comment_1 = response_login.context.get("comments")[0].text
+
+        try:
+            Comment.objects.create(post=post,
+                                   author=None,
+                                   text="Текс комментария 2")
+            comment_2 = response_login.context.get("comments")[0].text
+        except IntegrityError:
+            comment_2 = "Комментарий не создан"
+
+        comments = {
+            comment_1: "Текс комментария",
+            comment_2: "Комментарий не создан",
+        }
+
+        for value, expected in comments.items():
+            with self.subTest(value=value):
+                self.assertEqual(value, expected)
