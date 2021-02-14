@@ -16,7 +16,7 @@ class PostForm(ModelForm):
     def clean_text(self):
         data = self.cleaned_data["text"]
 
-        if data == "":
+        if data is None:
             raise forms.ValidationError("Артист отсутствует!")
         return data
 

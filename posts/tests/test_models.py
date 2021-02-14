@@ -8,7 +8,6 @@ class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Создаём тестовую запись в БД
         user = get_user_model().objects.create()
 
         Post.objects.create(text="Тестовая запись", author=user)
@@ -17,7 +16,6 @@ class PostModelTest(TestCase):
                              slug="slug",
                              description="Тестовое описание группы")
 
-        # Сохраняем созданную запись в качестве переменной класса
         cls.post = Post.objects.get(id=1)
         cls.group = Group.objects.get(id=1)
 

@@ -10,7 +10,6 @@ class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Создадим запись в БД для проверки доступности адреса new
         user = get_user_model().objects.create(username="Kseniya")
 
         Post.objects.create(text="Тестовая запись", author=user)
@@ -20,13 +19,9 @@ class PostModelTest(TestCase):
                              description="Тестовое описание группы")
 
     def setUp(self):
-        # Создаем неавторизованный клиент
         self.guest_client = Client()
-        # Создаем пользователя
         self.user = get_user_model().objects.create(username="andrey")
-        # Создаем второй клиент
         self.authorized_client = Client()
-        # Авторизуем пользователя
         self.authorized_client.force_login(self.user)
         cache.clear()
 
@@ -50,9 +45,9 @@ class PostModelTest(TestCase):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
 
-    # Проверяем редиректы с доступными страницами для неавторизованного
-    # пользователя
     def test_posts_urls_redirect_anonymous_user_accessible_pages(self):
+        """Проверяем редиректы с доступными страницами для неавторизованного
+        пользователя"""
         redirect_users = [
             reverse("posts:index"),
             reverse("posts:group", kwargs={"slug": "slug"}),
@@ -67,28 +62,30 @@ class PostModelTest(TestCase):
                 response = self.guest_client.get(url, follow=True)
                 self.assertEqual(response.status_code, 200)
 
-    # Проверяем редиректы с недоступными страницами для неавторизованного
-    # пользователя
     def test_posts_urls_redirect_anonymous_user_not_accessible_pages(self):
+        """Проверяем редиректы с недоступными страницами для неавторизованного
+        пользователя"""
         redirect_users = {
             reverse("posts:new_post"):
                 reverse("login") + "?next=" + reverse("posts:new_post"),
+
             reverse("posts:post_edit", kwargs={
                 "username": "Kseniya",
                 "post_id": "1"
             }):
-            reverse("posts:post", kwargs={
-                "username": "Kseniya",
-                "post_id": "1"
-            }),
+            reverse("login") + "?next=" + reverse(
+                "posts:post_edit",
+                kwargs={"username": "Kseniya", "post_id": "1"}
+            ),
         }
         for url, user_url in redirect_users.items():
             with self.subTest():
                 response = self.guest_client.get(url, follow=True)
                 self.assertRedirects(response, user_url)
 
-    # Проверяем доступность для авторизованного пользователя не автора поста
     def test_posts_urls_redirect_login_user_no_author(self):
+        """Проверяем доступность для авторизованного пользователя не автора
+        поста"""
         redirect_users = [
             reverse("posts:index"),
             reverse("posts:group", kwargs={"slug": "slug"}),
@@ -103,9 +100,8 @@ class PostModelTest(TestCase):
                 response = self.authorized_client.get(url, follow=True)
                 self.assertEqual(response.status_code, 200)
 
-    # Проверяем доступность для автора поста
     def test_posts_urls_redirect_login_user_author(self):
-        # Создаем пост авторизованным пользователем
+        """Проверяем доступность для автора поста"""
         Post.objects.create(text="Тестовая запись", author=self.user)
 
         Group.objects.create(title="Тестовое название группы",
@@ -121,8 +117,8 @@ class PostModelTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    # Проверяем возвращает ли сервер код 404, если страница не найдена
     def test_404_page_redirect_user(self):
+        """Проверяем возвращает ли сервер код 404, если страница не найдена"""
         redirect_page = [
             reverse("posts:index") + "check_404",
             reverse("posts:group", kwargs={"slug": "slug_404"}),

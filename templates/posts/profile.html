@@ -16,13 +16,14 @@
                                     </div>
                                     <div class="h3 text-muted">
                                         <!-- username автора -->
-                                        @{{ author }}
+                                        @{{ author }}<br>
+                                        {{count}}
                                     </div>
                             </div>
                             <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
                                             <div class="h6 text-muted">
-                                            Подписчиков: {{ author.following.count }} <br />
+                                            Подписчиков: {{ author.following.count }}<br />
                                             Подписан: {{ author.follower.count }}
                                             </div>
                                     </li>
@@ -33,6 +34,7 @@
                                             </div>
                                     
                                     </li>
+
                                     {% if author == user %}
                                     {% else %}
                                     <li class="list-group-item">
@@ -45,10 +47,11 @@
                                         {% else %}
                                         <a class="btn btn-lg btn-primary" 
                                                 href="{% url 'posts:profile_follow' author %}" role="button">
-                                        Подписаться 
+                                                Подписаться 
                                         </a>
                                         {% endif %}
                                     </li> 
+
                                     
                                     {% endif %}
                             </ul>

@@ -33,7 +33,6 @@ class Post(models.Model):
                               verbose_name="Изображение")
 
     def __str__(self):
-        # выводим текст поста
         return self.text[:15]
 
     class Meta:
@@ -41,24 +40,17 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    # Cсылка на пост, к которому оставлен комментарий (для связи модели Post с
-    # комментариями используйте имя comments)
     post = models.ForeignKey(Post,
                              on_delete=models.CASCADE,
                              related_name="comments")
-    # Cсылка на автора комментария (для связи модели User с комментариями
-    # используйте имя comments)
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name="comments")
-    # Текст комментария
     text = models.TextField(verbose_name="Комментарий",
                             help_text="Напишите ваш комментарий к посту")
-    # Автоматически подставляемые дата и время публикации комментария
     created = models.DateTimeField("date published", auto_now_add=True)
 
     def __str__(self):
-        # выводим текст комментария
         return self.text[:15]
 
 
@@ -69,3 +61,11 @@ class Follow(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name="following")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "author"],
+                name="unique_subscriber"
+            )
+        ]
