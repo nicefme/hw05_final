@@ -62,9 +62,10 @@ def profile_follow(request, username):
         name = follow_user
 
     if request.user.username == username or name == author:
-        return redirect(reverse_lazy("posts:profile", kwargs={
-           "username": author
-        }))
+        return redirect(reverse_lazy(
+            "posts:profile",
+            kwargs={"username": author}
+        ))
 
     form = FollowForm(request.POST or None)
     follow = form.save(commit=False)
@@ -73,9 +74,10 @@ def profile_follow(request, username):
     follow.user = user
 
     follow.save()
-    return redirect(reverse_lazy("posts:profile", kwargs={
-           "username": author
-        }))
+    return redirect(reverse_lazy(
+        "posts:profile",
+        kwargs={"username": author}
+    ))
 
 
 @login_required
@@ -87,9 +89,10 @@ def profile_unfollow(request, username):
     unfollow = Follow.objects.get(user=user, author=author)
 
     unfollow.delete()
-    return redirect(reverse_lazy("posts:profile", kwargs={
-           "username": author
-        }))
+    return redirect(reverse_lazy(
+        "posts:profile",
+        kwargs={"username": author}
+    ))
 
 
 @login_required

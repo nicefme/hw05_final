@@ -51,7 +51,7 @@ class PostPagesTests(TestCase):
         new_posts = [
             Post(text="Тестовая запись",
                  author=cls.user_0,
-                 group=Group.objects.get(id=(post+1)),
+                 group=Group.objects.get(id=(post + 1)),
                  image=cls.uploaded)
 
             for post in range(posts_count)
