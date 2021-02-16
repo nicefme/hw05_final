@@ -94,7 +94,7 @@ def profile(request, username):
 
     # Функция для тестов на подписку/отписку
     following = Follow.objects.filter(author=author).count()
-    if user.is_authenticated is True:
+    if user.is_authenticated:
         count = Follow.objects.filter(user=user, author=author).count()
     else:
         count = 0
@@ -141,11 +141,12 @@ def post_edit(request, username, post_id):
 
 
 def post_view(request, username, post_id):
-
+    # Для ревьюера: автор нужен для формирования информации на странице,
+    # не могу удалить его
     author = get_object_or_404(User, username=username)
     user = request.user
 
-    post = get_object_or_404(Post, id=post_id, author__username=author)
+    post = get_object_or_404(Post, id=post_id, author__username=username)
     comments = post.comments.all()
     form = CommentForm(request.POST or None)
 
@@ -160,9 +161,7 @@ def post_view(request, username, post_id):
 @login_required
 def add_comment(request, username, post_id):
 
-    author = get_object_or_404(User, username=username)
-
-    post = get_object_or_404(Post, id=post_id, author__username=author)
+    post = get_object_or_404(Post, id=post_id, author__username=username)
     form = CommentForm(request.POST or None)
 
     comment = form.save(commit=False)
