@@ -1,13 +1,15 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 User = get_user_model()
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200,
+                             verbose_name="Название группы")
     slug = models.SlugField(unique=True)
-    description = models.TextField()
+    description = models.TextField(verbose_name="Описание группы", blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -31,6 +33,8 @@ class Post(models.Model):
                               blank=True,
                               null=True,
                               verbose_name="Изображение")
+    post_rate_avg = models.FloatField(blank=True,
+                                        null=True)
 
     def __str__(self):
         return self.text[:15]
@@ -69,3 +73,14 @@ class Follow(models.Model):
                 name="unique_subscriber"
             )
         ]
+
+
+class PostRate(models.Model):
+    post = models.ForeignKey(Post,
+                             on_delete=models.CASCADE,
+                             related_name="rates")
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name="rates")
+    rate = models.IntegerField(blank=True,
+                               null=True)

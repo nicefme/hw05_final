@@ -1,15 +1,18 @@
 from django.shortcuts import render, get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import redirect, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_page
+from pytils.translit import slugify
+from django.db.models import Avg
 
-from .models import Post, Group, User, Follow
-from .forms import PostForm, CommentForm
+
+from .models import Post, Group, User, Follow, PostRate
+from .forms import PostForm, CommentForm, GroupForm
 
 
-@cache_page(20)
+#@cache_page(20)
 def index(request):
     latest = Post.objects.all()
     paginator = Paginator(latest, 10)
@@ -22,17 +25,31 @@ def index(request):
 
 
 def group_posts(request, slug):
-    group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get("page")
-    page = paginator.get_page(page_number)
-
-    return render(
+    group_count = Group.objects.filter(slug=slug).count()
+    if group_count == 0:
+            return render(
         request,
-        "posts/group.html",
-        {"group": group, "page": page, "paginator": paginator, "posts": posts}
+        "posts/group.html"
     )
+    else:
+        group = get_object_or_404(Group, slug=slug)
+        posts = group.posts.all()
+        paginator = Paginator(posts, 10)
+        page_number = request.GET.get("page")
+        page = paginator.get_page(page_number)
+
+        context = {
+            "group": group,
+            "page": page,
+            "paginator": paginator,
+            "posts": posts
+        }
+
+        return render(
+            request,
+            "posts/group.html",
+            context
+        )
 
 
 @login_required
@@ -201,3 +218,58 @@ def follow_index(request):
 
     return render(request, "posts/follow.html", {"page": page,
                                                  "paginator": paginator})
+
+def new_group(request):
+
+    form = GroupForm(request.POST or None)#, files=request.FILES or None)
+
+    group = form.save(commit=False)
+    group.slug = slugify(group.title)[:100]
+
+    slug_count = Group.objects.filter(slug=group.slug).count()
+    if request.method != "POST" or not form.is_valid() or slug_count == 1:
+        return render(request, "new_group.html", {"form": form, "slug_count": slug_count})
+    
+    group_slug = group.slug
+    group.save()
+
+    return redirect(reverse_lazy("posts:group", kwargs={"slug": group_slug}))
+
+
+def post_del(request, username, post_id):
+    
+    post = Post.objects.filter(id=post_id, author__username=request.user)
+    post.delete()
+    return redirect(reverse_lazy(
+        "posts:index"))
+     #   kwargs={"username": username, "post_id": post_id}
+  #  ))
+
+@login_required
+def post_rate(request, username, post_id, rate):
+    
+
+    post = get_object_or_404(Post, id=post_id, author__username=username)
+
+    user = request.user
+    
+    if user.is_authenticated:
+        count = PostRate.objects.filter(post_id=post.pk, user=user).count()
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    if rate < 0 or rate > 6:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+
+    if count == 0:
+        PostRate.objects.create(post_id=post.pk, user=user, rate=rate)
+    else:
+        PostRate.objects.filter(post_id=post.pk, user=user).delete()
+        PostRate.objects.create(post_id=post.pk, user=user, rate=rate)
+    post_rate_avg = PostRate.objects.filter(post_id=post.pk).aggregate(Avg('rate'))
+    post_rate_avg = round(post_rate_avg['rate__avg'],0)
+
+    post.post_rate_avg = post_rate_avg
+    post.save()
+
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))

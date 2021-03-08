@@ -4,12 +4,10 @@ venv/
 .venv
 .venv/
 
-<<<<<<< HEAD
 media
 media/
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 vscode
 vscode/
 .vscode
@@ -17,8 +15,6 @@ vscode/
 
 sent_emails/
 
-=======
->>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
 =======
 >>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
 =======
@@ -30,16 +26,12 @@ __pycache__/
 .DS_Store
 .AppleDouble
 .LSOverride
-<<<<<<< HEAD
 .vscode
-=======
->>>>>>> refs/remotes/origin/master
 
 *.sublime-project
 *.sublime-workspace
 
-static/
-posts/static/
+
 <<<<<<< HEAD
 
 db.sqlite3

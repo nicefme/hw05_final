@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Group, Comment, Follow
+from .models import Post, Group, Comment, Follow, PostRate
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -28,7 +28,12 @@ class FollowAdmin(admin.ModelAdmin):
     empty_value_display = "-пусто-"
 
 
+class PostRateAdmin(admin.ModelAdmin):
+    list_display = ("pk", "post_id", "post", "user", "rate")
+    empty_value_display = "-пусто-"
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Follow, FollowAdmin)
+admin.site.register(PostRate, PostRateAdmin)

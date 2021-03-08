@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import Post, Comment, Follow
+from .models import Post, Comment, Follow, Group#, PostRate
 
 
 class PostForm(ModelForm):
@@ -17,7 +17,7 @@ class PostForm(ModelForm):
         data = self.cleaned_data["text"]
 
         if data is None:
-            raise forms.ValidationError("Артист отсутствует!")
+            raise forms.ValidationError("Текст отсутствует!")
         return data
 
 
@@ -31,3 +31,15 @@ class FollowForm(ModelForm):
     class Meta:
         model = Follow
         fields = []
+
+
+class GroupForm(ModelForm):
+    class Meta:
+        model = Group
+        fields = ["title", "description",]
+
+        
+#class PostRateForm(ModelForm):
+ #   class Meta:
+ #       model = PostRate
+ #       fields = []

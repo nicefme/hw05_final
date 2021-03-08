@@ -1,0 +1,63 @@
+{% extends "base.html" %} 
+{% block title %}
+
+            Создать новую группу
+
+{% endblock %}
+{% block header %}Последние обновления на сайте{% endblock %} 
+{% block content %} 
+{% load user_filters %} 
+{% load thumbnail %} 
+ 
+<div class="row justify-content-center"> 
+    <div class="col-md-8 p-5"> 
+        <div class="card"> 
+            <div class="card-header"> 
+
+                Создать новую группу
+                 
+                </div> 
+            <div class="card-body"> 
+                {% if slug_count != 1 %}
+                {% else %}
+                <div class="alert alert-danger" role="alert">
+                  Группа с таким названием уже существует, пожалуйста придумайте другое навзание.
+                </div>
+                {% endif %}
+            <form method="post" enctype="multipart/form-data"> 
+                {% csrf_token %} 
+
+                {% for field in form %} 
+        
+                    <div class="form-group row" aria-required={% if field.field.required %}"true"{% else %}"false"{% endif %}> 
+                    <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label> 
+                        <div class="col-md-6"> 
+                            
+                        {{ field|addclass:"form-control" }} 
+                        {{ field.errors }}
+                        {% if field.help_text %} 
+                        <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small> 
+                        {% endif %} 
+                         
+                        </div> 
+                    </div> 
+ 
+                {% endfor %} 
+                 
+                <div class="col-md-6 offset-md-4">               
+                    <button type="submit" class="btn btn-primary"> 
+                         
+                            Добавить 
+                         
+                    </button> 
+                </div> 
+     
+            </form> 
+ 
+ 
+            </div>  
+        </div>  
+    </div>  
+</div>  
+ 
+{% endblock %} 

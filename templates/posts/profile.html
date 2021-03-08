@@ -23,7 +23,7 @@
                             <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
                                             <div class="h6 text-muted">
-                                            Подписчиков: {{ author.following.count }}<br />
+                                            Подписчиков: {{ author.following.count }}<br/>
                                             Подписан: {{ author.follower.count }}
                                             </div>
                                     </li>
@@ -45,7 +45,7 @@
                                         </a> 
 
                                         {% else %}
-                                        <a class="btn btn-lg btn-primary" 
+                                        <a class="btn btn-lg btn-dark" 
                                                 href="{% url 'posts:profile_follow' author %}" role="button">
                                                 Подписаться 
                                         </a>
