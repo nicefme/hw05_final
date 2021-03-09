@@ -4,8 +4,6 @@ venv/
 .venv
 .venv/
 
-media
-media/
 
 
 vscode
@@ -15,10 +13,6 @@ vscode/
 
 sent_emails/
 
-=======
->>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
-=======
->>>>>>> refs/remotes/origin/master
 __pycache__/
 *.py[cod]
 
@@ -32,23 +26,9 @@ __pycache__/
 *.sublime-workspace
 
 
-<<<<<<< HEAD
-
-db.sqlite3
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 htmlcov/
 .coverage
 .coverage.*
 coverage.xml
 *.cover 
-=======
->>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
-=======
->>>>>>> a9dae0e0a4cee8bd878d12fed9ead38c9d64ce69
-=======
-media/
 
-db.sqlite3
->>>>>>> refs/remotes/origin/master
