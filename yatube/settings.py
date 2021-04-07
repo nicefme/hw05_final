@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+#from dotenv import load_dotenv
+
+
+#load_dotenv()
+
+#secret_key = os.getenv("SECRET_KEY")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,8 +29,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'iujfx0arm1p)*5x73nifu&$z(mxb97xu7bb+z#j6m!l7cpohs('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG =  False
+DEBUG = True
+#DEBUG =  False
 
 
 ALLOWED_HOSTS = [
@@ -155,6 +161,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = "/auth/login/"
 LOGIN_REDIRECT_URL = "posts:index"
 # LOGOUT_REDIRECT_URL = "/auth/login/"
+
 
 #  подключаем движок filebased.EmailBackend
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

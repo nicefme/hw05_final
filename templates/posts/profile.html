@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Последние обновления на сайте{% endblock %}
-{% block header %}Последние обновления на сайте{% endblock %}
+{% block title %}Профиль пользователя{% endblock %}
+{% block header %}Профиль пользователя{% endblock %}
 {% block content %}
 {% load user_filters %}
 {% load thumbnail %}
@@ -62,7 +62,7 @@
             <div class="col-md-9">                
 
                 <div class="container">
-                        <h1> Последние обновления на сайте</h1>
+                        <h1></h1>
                          <!-- Вывод ленты записей -->
                              {% for post in page %}
                                <!-- Вот он, новый include! -->

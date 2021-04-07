@@ -1,14 +1,47 @@
+<style>
+  .page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #525355;
+    background-color: #ffffff;
+    border: 1px solid #6c757d;
+  }
+  .page-item.disabled .page-link {
+    color: #97999b;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #ffffff;
+    border-color: #6c757d;
+  }
+  .page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  .page-link:focus, .page-link:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  </style>
+
 {# Отрисовываем навигацию паджинатора только если есть и другие страницы #}
 {% if page.has_other_pages %}
 <nav>
-  <ul class="pagination">
+  <ul class="pagination justify-content-lg-start justify-content-center">
     {% if page.has_previous %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ page.previous_page_number }}">&laquo; Предыдущая</a>
+      <a class="page-link" href="?page={{ page.previous_page_number }}">&laquo;</a>
     </li>
     {% else %}
     <li class="page-item disabled">
-      <span class="page-link">&laquo; Предыдущая</span>
+      <span class="page-link">&laquo;</span> <!---&laquo; Предыдущая--->
     </li>
     {% endif %}
     {% for i in page.paginator.page_range %}
@@ -26,11 +59,11 @@
     {% endfor %}
     {% if page.has_next %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ page.next_page_number }}">Следующая &raquo;</a>
+      <a class="page-link" href="?page={{ page.next_page_number }}">&raquo;</a>
     </li>
     {% else %}
     <li class="page-item disabled">
-      <span class="page-link">Следующая &raquo;</span>
+      <span class="page-link">&raquo;</span> <!---Следующая &raquo;--->
     </li>
     {% endif %}
   </ul>

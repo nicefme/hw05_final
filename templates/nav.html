@@ -1,18 +1,38 @@
-<nav class="navbar navbar-light" style="background-color: #575757;">
-    
+  <nav class="navbar sticky-top navbar-dark bg-dark navbar-expand-lg ">
     <a class="navbar-brand" href="/"><span style="color:rgb(199, 198, 198)">Ya</span><span style="color:rgb(255, 255, 255)">tube</span></span></a>
-    <nav class="my-2 my-md-0 mr-md-3">
-        
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav mr-auto my-2 my-lg-0 navbar-nav-scroll" >
         {% if user.is_authenticated %}
-        <a class="p-2 text-white" href="/{{ user }}/">Пользователь: {{ user.username }}</a> <a class="text-white">|</a> 
-        <a class="p-2 text-white" href="{% url 'posts:new_group' %}">Новая группа</a> <a class="text-white">|</a> 
-        <a class="p-2 text-white" href="{% url 'posts:new_post' %}">Новая запись</a> <a class="text-white">|</a> 
-        <a class="p-2 text-white" href="{% url 'password_change' %}">Изменить пароль</a> <a class="text-white">|</a> 
-        <a class="p-2 text-white" href="{% url 'logout' %}">Выйти</a> 
+        <li class="nav-item active">
+          <a class="nav-link" href="/{{ user }}/">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+              Create
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+              <li><a class="dropdown-item" href="{% url 'posts:new_post' %}">New post</a></li>
+              <li><a class="dropdown-item" href="{% url 'posts:new_group' %}">New group</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'password_change' %}">Password</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'logout' %}">Logout</a>
+          </li>
         {% else %}
-        <a class="p-2 text-white" href="{% url 'login' %}">Войти</a> <a class="text-white">|</a> 
-        <a class="p-2 text-white" href="{% url 'signup' %}">Регистрация</a>
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'signup' %}">Signup</a>
+          </li>
         {% endif %}
+      </ul>
 
-    </nav>
-</nav> 
+    </div>
+  </nav>

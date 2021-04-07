@@ -3,7 +3,7 @@
     <!-- Отображение картинки -->
     {% load thumbnail %}
     {% thumbnail post.image "960x339" crop="top" upscale=True as im %}
-    <img class="card-img" src="{{ im.url }}" />
+    <img class="card-img img-fluid" src="{{ im.url }}" />
     {% endthumbnail %}
     <!-- Отображение текста поста -->
     <div class="card-body">
@@ -25,46 +25,62 @@
       {% endif %}
   
       <!-- Отображение ссылки на комментарии -->
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="btn-group">
+      <div class="container">
+        <div class="row">
+
           {% if post.comments.exists %}
-          <div>
+          <div class="row">
+          <div class="col-sm-auto">
             <a class="btn btn-sm ">
             Комментариев: {{ post.comments.count }} 
             </a>
           </div>
+          </div>
           {% endif %}
-          <div>
+          <div class="row">
+          <div class="col-sm-auto">
             <a class="btn btn-sm btn-secondary " href="{% url 'posts:post' post.author.username post.id %}" role="button">
             Добавить комментарий
             </a>  
           </div>
+        </div>
+        
           <!-- Ссылка на редактирование поста для автора -->
             {% if user == post.author %}
-            <div>
+            <div class="row">
+            <div class="col-sm-auto">
             <a class="btn btn-sm btn-secondary" href="{% url 'posts:post_edit' post.author.username post.id %}" role="button">
             Редактировать
             </a>
           </div>
+        </div>
                 
           <!-- Ссылка для удаления поста для автора -->
-          <div>
+          <div class="row">
+          <div class="col-sm-auto">
             <a class="btn btn-sm btn-danger" href="{% url 'posts:post_del' post.author.username post.id %}" role="button">
             Удалить
             </a>
           </div>
+        </div>
+        
             {% endif %}
-            <div>
+          
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <div class="row">
+            <div class="col-sm-auto">
               <a class="btn btn-sm ">
               Рейтинг:  
               </a>
             </div>
-
+          </div></div>
             
             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
               <div class="btn-group me-2 d-flex justify-content-between align-items-center">
                 {% for i in i|rjust:5 %}
-                <a class="btn btn-sm 
+                
+                <a class="btn btn-sm
                  
                 
                 " href="{% url 'posts:post_rate' post.author.username post.id forloop.counter %}" role="button">
@@ -89,16 +105,15 @@
                 <button type="button" class="btn btn-sm btn-light">4</button>
                 <button type="button" class="btn btn-sm btn-light">5</button>--->
               </div>
-              
 
-            </div>
             
             
           </div>
-        
-  
-        <!-- Дата публикации поста -->
+        </div>
+      </div>
+      <div class="text-right">  
         <small class="text-muted">{{ post.pub_date }}</small>
+      </div>
       </div>
     </div>
   </div> 
